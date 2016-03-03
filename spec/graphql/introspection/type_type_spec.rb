@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe GraphQL::Introspection::TypeType do
   let(:query_string) {%|
@@ -24,7 +24,7 @@ describe GraphQL::Introspection::TypeType do
     {"name"=>"GOAT",  "isDeprecated"=> false },
     {"name"=>"SHEEP", "isDeprecated"=> false },
   ]}
-  it 'exposes metadata about types' do
+  it "exposes metadata about types" do
     expected = {"data"=> {
       "cheeseType" => {
         "name"=> "Cheese",
@@ -66,7 +66,7 @@ describe GraphQL::Introspection::TypeType do
     assert_equal(expected, result)
   end
 
-  describe 'deprecated fields' do
+  describe "deprecated fields" do
     let(:query_string) {%|
        query introspectionQuery {
          cheeseType:    __type(name: "Cheese") { name, kind, fields(includeDeprecated: true) { name, isDeprecated, type { name, ofType { name } } } }
@@ -74,7 +74,7 @@ describe GraphQL::Introspection::TypeType do
        }
     |}
     let(:deprecated_fields) { {"name"=>"fatContent", "isDeprecated"=>true, "type"=>{"name"=>"Non-Null", "ofType"=>{"name"=>"Float"}}} }
-    it 'can expose deprecated fields' do
+    it "can expose deprecated fields" do
       new_cheese_fields = [deprecated_fields] + cheese_fields
       expected = { "data" => {
         "cheeseType" => {
@@ -89,6 +89,30 @@ describe GraphQL::Introspection::TypeType do
         },
       }}
       assert_equal(expected, result)
+    end
+
+    describe "input objects" do
+      let(:query_string) {%|
+         query introspectionQuery {
+           __type(name: "DairyProductInput") { name, description, kind, inputFields { name, type { name }, defaultValue } }
+         }
+      |}
+
+      it "exposes metadata about input objects" do
+        expected = { "data" => {
+            "__type" => {
+              "name"=>"DairyProductInput",
+              "description"=>"Properties for finding a dairy product",
+              "kind"=>"INPUT_OBJECT",
+              "inputFields"=>[
+                {"name"=>"source", "type"=>{ "name" => "Non-Null"}, "defaultValue"=>nil},
+                {"name"=>"originDairy", "type"=>{"name"=>"String"}, "defaultValue"=>"\"Sugar Hollow Dairy\""},
+                {"name"=>"fatContent", "type"=>{ "name" => "Float"}, "defaultValue"=>nil},
+              ]
+            }
+          }}
+        assert_equal(expected, result)
+      end
     end
   end
 end

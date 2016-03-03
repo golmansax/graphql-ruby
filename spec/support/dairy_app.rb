@@ -1,4 +1,4 @@
-require_relative './dairy_data'
+require_relative "./dairy_data"
 
 class NoSuchDairyError < StandardError; end
 
@@ -59,7 +59,7 @@ CheeseType = GraphQL::ObjectType.define do
 end
 
 MilkType = GraphQL::ObjectType.define do
-  name 'Milk'
+  name "Milk"
   description "Dairy beverage"
   interfaces [EdibleInterface, AnimalProductInterface]
   field :id, !types.ID
@@ -74,8 +74,8 @@ MilkType = GraphQL::ObjectType.define do
 end
 
 DairyType = GraphQL::ObjectType.define do
-  name 'Dairy'
-  description 'A farm where milk is harvested and cheese is produced'
+  name "Dairy"
+  description "A farm where milk is harvested and cheese is produced"
   field :id, !types.ID
   field :cheese, CheeseType
   field :milks, types[MilkType]
@@ -94,8 +94,8 @@ DairyProductUnion = GraphQL::UnionType.define do
 end
 
 CowType = GraphQL::ObjectType.define do
-  name 'Cow'
-  description 'A farm where milk is harvested and cheese is produced'
+  name "Cow"
+  description "A farm where milk is harvested and cheese is produced"
   field :id, !types.ID
   field :name, types.String
   field :last_produced_dairy, DairyProductUnion
